@@ -1,9 +1,9 @@
 ---
-name: upload-skill
+name: selfhub-upload-skill
 description: 向技能共享平台上传并共享一个技能，需将技能文件夹打包为 .zip 后调用接口。
 ---
 
-# upload-skill
+# selfhub-upload-skill
 
 向技能共享平台上传并共享一个技能。上传前需将技能文件夹打包为 `.zip` 压缩包，上传后原 ZIP 被直接存储，原始目录结构完整保留。
 

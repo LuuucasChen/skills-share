@@ -1,9 +1,9 @@
 ---
-name: query-skills
+name: selfhub-query-skills
 description: 查询技能共享平台上的技能列表，支持关键字模糊搜索。
 ---
 
-# query-skills
+# selfhub-query-skills
 
 查询技能共享平台上的技能列表。支持通过关键字对技能名称、描述、标签进行模糊搜索。
 
