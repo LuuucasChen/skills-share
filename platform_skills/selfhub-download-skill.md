@@ -26,7 +26,7 @@ GET http://localhost:8000/api/skills/550e8400-e29b-41d4-a716-446655440000/downlo
 1. 先调用 `selfhub-query-skills` 获取技能列表
 2. 从返回结果中提取目标技能的 `id` 字段
 3. 调用下载接口获取 ZIP 二进制数据
-4. 将 ZIP 保存到 `本Agent的skills目录/{技能名称}.zip`（不解压）
+4. 将 ZIP 保存到 `Agent的skills目录/{技能名称}.zip`（不解压）
 
 ### 保存位置
 

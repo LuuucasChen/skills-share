@@ -5,7 +5,7 @@ description: 从技能共享平台下载指定技能的 ZIP 包，并自动解�
 
 # selfhub-install-skill
 
-从技能共享平台下载指定技能的 ZIP 压缩包，**自动解压并将所有文件安装到 platform_skills 目录**。适用于"安装 xxx 技能"场景，安装后的文件可直接作为 Agent Skill 使用。
+从技能共享平台下载指定技能的 ZIP 压缩包，**自动解压并将所有文件安装到 skills 目录**。适用于"技能共享平台安装 xxx 技能"场景，安装后的文件可直接作为 Agent Skill 使用。
 
 ## 用法
 
@@ -43,12 +43,8 @@ GET http://localhost:8000/api/skills/550e8400-e29b-41d4-a716-446655440000/downlo
 安装 "自动化部署技能" 后，目录结构如下：
 
 ```
-d:\skills_share\platform_skills\
-├── selfhub-query-skills.md      # 已有
-├── selfhub-download-skill.md    # 已有
-├── selfhub-upload-skill.md      # 已有
-├── selfhub-install-skill.md     # 已有
-└── 自动化部署技能\           # 新安装的技能目录
+~\skills\
+└── deploy\           # 新安装的技能目录
     ├── SKILLS.md            # 技能定义文件（可被 Agent 识别）
     ├── deploy.sh            # 可执行脚本
     └── config.yaml          # 配置文件
