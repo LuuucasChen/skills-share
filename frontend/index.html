@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Skill Share — 技能共享平台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <!-- 几何背景氛围 -->
+    <div class="atmosphere" aria-hidden="true">
+        <div class="geo-blob geo-blob-1"></div>
+        <div class="geo-blob geo-blob-2"></div>
+        <div class="geo-line geo-line-1"></div>
+        <div class="geo-line geo-line-2"></div>
+    </div>
+
+    <!-- ========== Hero ========== -->
+    <header class="hero">
+        <div class="hero-content">
+            <p class="hero-eyebrow">Skill Share</p>
+            <h1 class="hero-title">
+                <span class="hero-title-line">发现与分享</span>
+                <span class="hero-title-line accent">实用技能</span>
+            </h1>
+            <p class="hero-subtitle">将知识打包，让经验流动。上传你的技能，或发现他人分享的宝藏。</p>
+            <div class="hero-stats">
+                <div class="stat-pill">
+                    <span class="stat-number" id="totalSkills">0</span>
+                    <span class="stat-name">技能</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="stat-number" id="totalFiles">0</span>
+                    <span class="stat-name">文件</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="stat-number" id="totalTags">0</span>
+                    <span class="stat-name">标签</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========== Main ========== -->
+    <main>
+        <div class="toolbar">
+            <div class="search-wrap">
+                <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+                <input type="text" id="searchInput" placeholder="搜索技能…" autocomplete="off" />
+                <button class="search-clear" id="searchClear" aria-label="清除搜索">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 6 6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <button class="btn btn-primary" id="uploadBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+                上传技能
+            </button>
+        </div>
+
+        <!-- 加载状态 -->
+        <div class="loading" id="loading" style="display:block;">
+            <div class="skeleton-grid" id="skeletonGrid"></div>
+        </div>
+
+        <!-- 错误状态 -->
+        <div class="state-box" id="error" style="display:none;">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <p id="errorMessage"></p>
+            <button class="btn btn-secondary" onclick="fetchSkills()">重新加载</button>
+        </div>
+
+        <!-- 空状态 -->
+        <div class="state-box" id="empty" style="display:none;">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/>
+            </svg>
+            <h3>还没有共享的技能</h3>
+            <p>将你的技能文件夹打包为 .zip，点击「上传技能」开始分享。</p>
+        </div>
+
+        <!-- 技能列表 -->
+        <div class="skills-grid" id="skillsGrid"></div>
+    </main>
+
+    <!-- ========== 上传弹窗 ========== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>上传技能</h2>
+                <button class="modal-close" id="modalClose" aria-label="关闭">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 6 6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="skillName">技能名称 <span class="required">*</span></label>
+                    <input type="text" id="skillName" required placeholder="例如：Python 自动化脚本" maxlength="60" />
+                </div>
+
+                <div class="form-group">
+                    <label for="skillDesc">
+                        技能描述
+                        <span class="char-count"><span id="descCount">0</span> / 200</span>
+                    </label>
+                    <textarea id="skillDesc" rows="3" maxlength="200" placeholder="简要描述这个技能的用途……"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="skillTags">标签</label>
+                    <input type="text" id="skillTags" placeholder="多个标签用逗号分隔，如：python, 自动化" />
+                </div>
+
+                <div class="form-group">
+                    <label for="skillFile">技能文件 <span class="required">*</span></label>
+                    <div class="file-zone" id="fileZone">
+                        <input type="file" id="skillFile" accept=".zip" />
+                        <div class="file-zone-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                        </div>
+                        <div class="file-zone-text">将 .zip 文件拖放到此处，或点击选择</div>
+                        <div class="file-zone-hint">技能文件夹打包为 .zip，大小不超过 50MB</div>
+                    </div>
+                    <div class="file-list" id="fileList"></div>
+                </div>
+
+                <div class="upload-progress" id="uploadProgress" style="display:none;">
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span class="progress-text" id="progressText">0%</span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-text" id="cancelBtn">取消</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 5v14M5 12h14"/>
+                        </svg>
+                        上传
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== Toast ========== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

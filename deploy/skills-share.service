@@ -1,0 +1,17 @@
+[Unit]
+Description=技能共享平台
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/skills_share
+Environment="PATH=/opt/skills_share/venv/bin"
+ExecStart=/opt/skills_share/venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8000
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

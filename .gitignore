@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 用户上传的数据（不应提交到仓库）
+backend/storage/files/*.zip
+backend/storage/metadata.json
+backend/storage/temp_skill/
+
+# 临时脚本
+upload_test.py
+test_limits.py
