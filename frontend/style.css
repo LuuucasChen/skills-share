@@ -1,52 +1,55 @@
 /* =========================================================
-   Skill Share — 编辑几何风格设计系统
-   方向：编辑排版 + 几何构图 + 有意图的留白
+   Skill Share — Claude Inspired Design System
+   方向：文学沙龙 · 温暖羊皮纸 · 衬线标题 + 无衬线UI
    ========================================================= */
 
 :root {
-    /* 背景层 */
-    --bg: #f6f5f2;
-    --bg-warm: #f0eeea;
-    --surface: #ffffff;
-    --surface-hover: #fafaf8;
+    /* 背景层 — 全暖调 */
+    --bg: #f5f4ed;
+    --bg-warm: #f0eee6;
+    --surface: #faf9f5;
+    --surface-hover: #ffffff;
 
     /* 文字 */
-    --text: #1c1917;
-    --text-secondary: #57534e;
-    --text-muted: #a8a29e;
-    --text-inverse: #ffffff;
+    --text: #141413;
+    --text-secondary: #5e5d59;
+    --text-muted: #87867f;
+    --text-inverse: #faf9f5;
 
-    /* 强调色 — Teal，独特且不 cliché */
-    --accent: #0d9488;
-    --accent-dark: #0f766e;
-    --accent-soft: rgba(13, 148, 136, 0.08);
-    --accent-glow: rgba(13, 148, 136, 0.15);
+    /* 品牌强调 — Terracotta */
+    --accent: #c96442;
+    --accent-dark: #a85532;
+    --accent-soft: rgba(201, 100, 66, 0.08);
+    --accent-glow: rgba(201, 100, 66, 0.12);
 
     /* 状态 */
-    --success: #059669;
-    --success-soft: rgba(5, 150, 105, 0.08);
-    --danger: #dc2626;
-    --danger-soft: rgba(220, 38, 38, 0.08);
+    --success: #4a7c59;
+    --success-soft: rgba(74, 124, 89, 0.08);
+    --danger: #b53333;
+    --danger-soft: rgba(181, 51, 51, 0.08);
 
     /* 边框 */
-    --border: #e7e5e4;
-    --border-light: #f5f5f4;
+    --border: #f0eee6;
+    --border-warm: #e8e6dc;
+    --border-dark: #30302e;
+
+    /* 阴影 — Ring Shadow 系统 */
+    --ring: #d1cfc5;
+    --ring-subtle: #dedcd1;
+    --ring-deep: #c2c0b6;
+    --shadow-whisper: rgba(0, 0, 0, 0.05) 0px 4px 24px;
 
     /* 圆角 */
     --radius-sm: 8px;
-    --radius: 14px;
-    --radius-lg: 20px;
-    --radius-xl: 28px;
-
-    /* 阴影 */
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-    --shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.1);
-    --shadow-xl: 0 24px 80px rgba(0, 0, 0, 0.12);
+    --radius: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-max: 32px;
 
     /* 布局 */
-    --max-width: 1100px;
-    --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --max-width: 1200px;
+    --font-serif: Georgia, "Times New Roman", "Songti SC", serif;
+    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
 
     /* 动效 */
     --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -63,66 +66,14 @@
 }
 
 body {
-    font-family: var(--font);
+    font-family: var(--font-sans);
     color: var(--text);
     background: var(--bg);
-    line-height: 1.6;
+    line-height: 1.60;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
     overflow-x: hidden;
-}
-
-/* ---------- 几何背景氛围 ---------- */
-.atmosphere {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    overflow: hidden;
-}
-
-.geo-blob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.5;
-}
-
-.geo-blob-1 {
-    width: 600px;
-    height: 600px;
-    top: -200px;
-    right: -150px;
-    background: radial-gradient(circle, var(--accent-soft), transparent 70%);
-}
-
-.geo-blob-2 {
-    width: 400px;
-    height: 400px;
-    bottom: -100px;
-    left: -100px;
-    background: radial-gradient(circle, rgba(251, 191, 36, 0.06), transparent 70%);
-}
-
-.geo-line {
-    position: absolute;
-    background: linear-gradient(90deg, transparent, var(--border), transparent);
-    opacity: 0.5;
-}
-
-.geo-line-1 {
-    width: 1px;
-    height: 100%;
-    top: 0;
-    left: 20%;
-}
-
-.geo-line-2 {
-    width: 1px;
-    height: 100%;
-    top: 0;
-    left: 80%;
 }
 
 /* ---------- Hero ---------- */
@@ -131,6 +82,7 @@ body {
     z-index: 1;
     text-align: center;
     padding: 100px 24px 60px;
+    background: var(--bg);
 }
 
 .hero-content {
@@ -140,19 +92,21 @@ body {
 }
 
 .hero-eyebrow {
-    font-size: 12px;
-    font-weight: 700;
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 500;
     letter-spacing: 3px;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .hero-title {
+    font-family: var(--font-serif);
     font-size: clamp(36px, 6vw, 64px);
-    font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: -0.03em;
+    font-weight: 500;
+    line-height: 1.10;
+    letter-spacing: normal;
     margin-bottom: 20px;
     color: var(--text);
 }
@@ -163,15 +117,15 @@ body {
 
 .hero-title-line.accent {
     color: var(--accent);
-    position: relative;
 }
 
 .hero-subtitle {
-    font-size: 17px;
+    font-family: var(--font-sans);
+    font-size: 20px;
     color: var(--text-secondary);
-    max-width: 480px;
-    margin: 0 auto 36px;
-    line-height: 1.6;
+    max-width: 520px;
+    margin: 0 auto 40px;
+    line-height: 1.60;
 }
 
 .hero-stats {
@@ -189,12 +143,13 @@ body {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 100px;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-whisper);
 }
 
 .stat-number {
+    font-family: var(--font-sans);
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--text);
     font-variant-numeric: tabular-nums;
 }
@@ -221,7 +176,7 @@ main {
     display: flex;
     gap: 12px;
     align-items: center;
-    margin-bottom: 36px;
+    margin-bottom: 40px;
     animation: fadeInUp 0.6s var(--ease-out) 0.3s both;
 }
 
@@ -231,7 +186,7 @@ main {
     align-items: center;
     gap: 10px;
     background: var(--surface);
-    border: 1.5px solid var(--border);
+    border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 0 14px;
     transition: border-color var(--duration) var(--ease),
@@ -240,7 +195,7 @@ main {
 
 .search-wrap:focus-within {
     border-color: var(--accent);
-    box-shadow: 0 0 0 4px var(--accent-soft);
+    box-shadow: 0px 0px 0px 1px var(--ring);
 }
 
 .search-icon {
@@ -253,8 +208,8 @@ main {
     border: none;
     background: transparent;
     padding: 12px 0;
-    font-size: 14px;
-    font-family: var(--font);
+    font-size: 16px;
+    font-family: var(--font-sans);
     color: var(--text);
     outline: none;
     min-width: 0;
@@ -283,7 +238,7 @@ main {
 
 .search-clear:hover {
     color: var(--text);
-    background: var(--border-light);
+    background: var(--border-warm);
 }
 
 /* ---------- Buttons ---------- */
@@ -291,11 +246,9 @@ main {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 22px;
-    font-size: 14px;
-    font-weight: 600;
-    font-family: var(--font);
-    border-radius: var(--radius-sm);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 500;
     border: none;
     cursor: pointer;
     transition: all var(--duration) var(--ease);
@@ -304,30 +257,36 @@ main {
 }
 
 .btn-primary {
-    background: var(--text);
+    background: var(--accent);
     color: var(--text-inverse);
+    padding: 12px 22px;
+    border-radius: var(--radius);
+    box-shadow: 0px 0px 0px 0px var(--accent), 0px 0px 0px 1px var(--accent);
 }
 
 .btn-primary:hover {
     background: var(--accent-dark);
     transform: translateY(-1px);
-    box-shadow: var(--shadow);
+    box-shadow: 0px 0px 0px 0px var(--accent-dark), 0px 0px 0px 1px var(--accent-dark);
 }
 
 .btn-primary:active {
-    transform: scale(0.97);
+    transform: scale(0.98);
+    box-shadow: inset 0px 0px 0px 1px rgba(0,0,0,0.15);
 }
 
 .btn-secondary {
-    background: var(--surface);
-    color: var(--text);
-    border: 1.5px solid var(--border);
+    background: var(--border-warm);
+    color: var(--text-secondary);
+    padding: 12px 22px;
+    border-radius: var(--radius);
+    box-shadow: 0px 0px 0px 0px var(--border-warm), 0px 0px 0px 1px var(--ring);
 }
 
 .btn-secondary:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: var(--accent-soft);
+    background: var(--bg-warm);
+    color: var(--text);
+    box-shadow: 0px 0px 0px 0px var(--bg-warm), 0px 0px 0px 1px var(--ring-deep);
 }
 
 .btn-text {
@@ -338,13 +297,14 @@ main {
 
 .btn-text:hover {
     color: var(--text);
-    background: var(--border-light);
+    background: var(--border-warm);
+    border-radius: var(--radius-sm);
 }
 
 .btn-sm {
     padding: 8px 14px;
-    font-size: 12px;
-    border-radius: 8px;
+    font-size: 13px;
+    border-radius: var(--radius-sm);
 }
 
 /* ---------- State Boxes ---------- */
@@ -361,16 +321,19 @@ main {
 }
 
 .state-box h3 {
-    font-size: 20px;
-    font-weight: 700;
+    font-family: var(--font-serif);
+    font-size: 25px;
+    font-weight: 500;
     color: var(--text);
     margin-bottom: 8px;
+    line-height: 1.20;
 }
 
 .state-box p {
-    font-size: 14px;
+    font-size: 16px;
     color: var(--text-secondary);
     margin-bottom: 24px;
+    line-height: 1.60;
 }
 
 /* ---------- Skeleton ---------- */
@@ -382,14 +345,14 @@ main {
 
 .skeleton-card {
     background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
     padding: 28px;
 }
 
 .skeleton-line {
     height: 10px;
-    background: linear-gradient(90deg, var(--border) 25%, #ebeae8 50%, var(--border) 75%);
+    background: linear-gradient(90deg, var(--border) 25%, var(--border-warm) 50%, var(--border) 75%);
     background-size: 200% 100%;
     animation: shimmer 1.6s ease-in-out infinite;
     border-radius: 6px;
@@ -418,8 +381,8 @@ main {
 
 .skill-card {
     background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
     padding: 28px;
     display: flex;
     flex-direction: column;
@@ -437,9 +400,9 @@ main {
 }
 
 .skill-card:hover {
-    border-color: var(--accent);
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-4px);
+    border-color: var(--border-warm);
+    box-shadow: var(--shadow-whisper);
+    transform: translateY(-2px);
 }
 
 .skill-card-header {
@@ -450,26 +413,27 @@ main {
 }
 
 .skill-card-header h3 {
-    font-size: 16px;
-    font-weight: 700;
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 500;
     color: var(--text);
-    line-height: 1.35;
+    line-height: 1.20;
     word-break: break-word;
 }
 
 .skill-size {
     flex-shrink: 0;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--text-muted);
     white-space: nowrap;
-    padding-top: 2px;
+    padding-top: 4px;
 }
 
 .skill-desc {
-    font-size: 13px;
+    font-size: 15px;
     color: var(--text-secondary);
-    line-height: 1.6;
+    line-height: 1.60;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -483,11 +447,11 @@ main {
 }
 
 .skill-tag {
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 500;
     color: var(--accent-dark);
     background: var(--accent-soft);
-    padding: 3px 10px;
+    padding: 4px 10px;
     border-radius: 100px;
     letter-spacing: 0.3px;
 }
@@ -498,12 +462,12 @@ main {
     justify-content: space-between;
     margin-top: auto;
     padding-top: 12px;
-    border-top: 1px solid var(--border-light);
+    border-top: 1px solid var(--border);
 }
 
 .skill-time {
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 400;
     color: var(--text-muted);
     display: inline-flex;
     align-items: center;
@@ -516,9 +480,9 @@ main {
     position: fixed;
     z-index: 100;
     inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(20, 20, 19, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     align-items: center;
     justify-content: center;
     padding: 24px;
@@ -534,13 +498,14 @@ main {
 
 .modal {
     background: var(--surface);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl);
     width: 100%;
-    max-width: 460px;
-    box-shadow: var(--shadow-xl);
+    max-width: 480px;
+    box-shadow: var(--shadow-whisper);
     transform: scale(0.92) translateY(20px);
     transition: transform 0.5s var(--ease-spring);
     overflow: hidden;
+    border: 1px solid var(--border);
 }
 
 .modal-overlay.active .modal {
@@ -555,9 +520,11 @@ main {
 }
 
 .modal-header h2 {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-family: var(--font-serif);
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.10;
+    color: var(--text);
 }
 
 .modal-close {
@@ -574,7 +541,7 @@ main {
 }
 
 .modal-close:hover {
-    background: var(--border-light);
+    background: var(--border-warm);
     color: var(--text);
 }
 
@@ -592,9 +559,10 @@ main {
     align-items: center;
     justify-content: space-between;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--text);
     margin-bottom: 6px;
+    font-family: var(--font-sans);
 }
 
 .required {
@@ -602,31 +570,31 @@ main {
 }
 
 .char-count {
-    font-weight: 500;
+    font-weight: 400;
     color: var(--text-muted);
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .form-group input[type="text"],
 .form-group textarea {
     width: 100%;
     padding: 11px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-family: var(--font);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 16px;
+    font-family: var(--font-sans);
     color: var(--text);
     background: var(--bg);
     transition: all var(--duration) var(--ease);
     outline: none;
-    line-height: 1.5;
+    line-height: 1.50;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
     background: var(--surface);
     border-color: var(--accent);
-    box-shadow: 0 0 0 4px var(--accent-soft);
+    box-shadow: 0px 0px 0px 1px var(--ring);
 }
 
 .form-group input::placeholder,
@@ -642,8 +610,8 @@ main {
 /* ---------- File Zone ---------- */
 .file-zone {
     position: relative;
-    border: 2px dashed var(--border);
-    border-radius: var(--radius);
+    border: 2px dashed var(--border-warm);
+    border-radius: var(--radius-lg);
     padding: 32px 24px;
     text-align: center;
     cursor: pointer;
@@ -669,15 +637,17 @@ main {
 }
 
 .file-zone-text {
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 500;
     color: var(--text);
     margin-bottom: 4px;
+    line-height: 1.40;
 }
 
 .file-zone-hint {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-muted);
+    line-height: 1.40;
 }
 
 .file-list {
@@ -689,7 +659,7 @@ main {
 
 .file-chip {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
     background: var(--accent-soft);
     color: var(--accent-dark);
     padding: 5px 12px;
@@ -722,7 +692,7 @@ main {
 
 .progress-text {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--text-muted);
     flex-shrink: 0;
     font-variant-numeric: tabular-nums;
@@ -759,10 +729,10 @@ main {
     padding: 14px 24px;
     background: var(--text);
     color: var(--text-inverse);
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 500;
     border-radius: var(--radius);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-whisper);
     pointer-events: all;
     animation: toastIn 0.4s var(--ease-spring);
 }
@@ -830,6 +800,10 @@ main {
     .hero-title {
         font-size: 42px;
     }
+
+    .hero-subtitle {
+        font-size: 18px;
+    }
 }
 
 @media (max-width: 640px) {
@@ -839,6 +813,10 @@ main {
 
     .hero-title {
         font-size: 32px;
+    }
+
+    .hero-subtitle {
+        font-size: 16px;
     }
 
     .hero-stats {
@@ -865,6 +843,10 @@ main {
     .btn-primary {
         width: 100%;
         justify-content: center;
+    }
+
+    .modal-header h2 {
+        font-size: 25px;
     }
 }
 
