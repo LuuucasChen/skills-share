@@ -1,7 +1,8 @@
 # 技能共享平台 — 生产部署指南
 
 > 部署方式：systemd + Nginx（Ubuntu 22.04 LTS）  
-> 内置安全：并发限制 2、IP 限流 30 秒
+> 内置安全：并发限制 2、IP 限流 30 秒  
+> 代码仓库：https://github.com/LuuucasChen/skills-share
 
 ---
 
@@ -11,26 +12,19 @@
 - **Python**：3.11+（服务器已预装）
 - **内存**：最低 512MB，推荐 1GB
 - **带宽**：按实际访问需求
-- **端口**：安全组需开放 `22`(SSH)、`80`(HTTP)、`443`(HTTPS)
+- **端口**：安全组需开放 `22`(SSH)、`80`(HTTP)；有域名时额外开放 `443`(HTTPS)
 
 ---
 
-## 1. 上传代码到服务器
+## 1. 从 GitHub 拉取代码到服务器
 
 ```bash
-# 在本地将项目推送到 Git 仓库
-cd /path/to/skills_share
-git init
-git add .
-git commit -m "init"
-git remote add origin <你的仓库地址>
-git push -u origin main
-
-# 在服务器上拉取
 cd /opt
-sudo git clone <你的仓库地址> skills_share
+sudo git clone https://github.com/LuuucasChen/skills-share.git skills_share
 sudo chown -R www-data:www-data skills_share
 ```
+
+> **无域名部署说明**：没有购买域名时，直接用服务器**公网 IP** 访问即可。Nginx 配置中 `server_name _;` 已兼容 IP 直接访问。后续如需绑定域名，修改 `deploy/nginx.conf` 中的 `server_name` 并配置 HTTPS 即可。
 
 ---
 
@@ -84,7 +78,9 @@ sudo systemctl restart nginx
 
 ---
 
-## 5. 配置 HTTPS（Let's Encrypt）
+## 5. 配置 HTTPS（有域名时可选）
+
+> 如果没有域名，**跳过此步骤**，直接用 `http://<服务器公网IP>` 访问。
 
 ```bash
 sudo apt install certbot python3-certbot-nginx -y
@@ -96,6 +92,8 @@ sudo certbot --nginx -d your-domain.com
 sudo certbot renew --dry-run
 ```
 
+**无域名时 Nginx 已配置为 HTTP 模式**，通过 `server_name _;` 接受任意主机头（包括 IP 直接访问）。
+
 ---
 
 ## 6. 防火墙配置
@@ -105,7 +103,8 @@ sudo ufw default deny incoming
 sudo ufw default allow outgoing
 sudo ufw allow 22/tcp   # SSH
 sudo ufw allow 80/tcp   # HTTP
-sudo ufw allow 443/tcp  # HTTPS
+# 有域名并配置 HTTPS 时再开放 443
+# sudo ufw allow 443/tcp
 sudo ufw enable
 ```
 
@@ -209,6 +208,6 @@ sudo tail -f /var/log/nginx/error.log
 - [ ] `backend/storage/` 目录存在且可写
 - [ ] systemd 服务已启用并运行
 - [ ] Nginx 已安装并配置正确
-- [ ] 防火墙已开放 80/443
-- [ ] （可选）HTTPS 证书已配置
+- [ ] 防火墙已开放 80（有域名时再开 443）
+- [ ] （可选）有域名时配置 HTTPS 证书
 - [ ] 备份策略已配置
