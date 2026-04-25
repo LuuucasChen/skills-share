@@ -254,6 +254,16 @@ async def upload_skill(
 
     tags_list = [t.strip() for t in tags.split(",") if t.strip()]
 
+    skills = load_metadata()
+
+    # 同名覆盖：删除旧的 skill 文件和记录
+    existing = [s for s in skills if s["name"] == name]
+    for old in existing:
+        old_zip = FILES_DIR / f"{old['id']}.zip"
+        if old_zip.exists():
+            old_zip.unlink()
+        skills.remove(old)
+
     metadata = {
         "id": skill_id,
         "name": name,
@@ -266,7 +276,6 @@ async def upload_skill(
         "upload_time": datetime.now().isoformat(),
     }
 
-    skills = load_metadata()
     skills.append(metadata)
     save_metadata(skills)
 
