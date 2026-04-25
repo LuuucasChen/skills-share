@@ -33,37 +33,37 @@ app.add_middleware(
 # 安全防护：限流 + 并发控制
 # ---------------------------------------------------------------------------
 MAX_CONCURRENT_REQUESTS = 2       # 最多同时处理 2 个请求
-RATE_LIMIT_SECONDS = 30           # 每个 IP 30 秒内只能调用一次
+RATE_LIMIT_WINDOW = 30            # 限流时间窗口（秒）
+RATE_LIMIT_COUNT = 10             # 每个 IP 在窗口内最多请求次数
 
 request_semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
-ip_last_access: dict[str, float] = {}
+ip_access_log: dict[str, list[float]] = {}
 
 
 @app.middleware("http")
 async def security_middleware(request: Request, call_next):
     """
     安全中间件：
-    1. 限流 — 同一 IP 30 秒内只能请求一次
+    1. 限流 — 同一 IP 30 秒内最多请求 10 次
     2. 并发 — 最多同时处理 2 个请求
     """
     client_ip = request.client.host
     now = time.time()
 
-    # 清理过期记录（防止字典无限膨胀）
-    for ip, last in list(ip_last_access.items()):
-        if now - last > RATE_LIMIT_SECONDS * 2:
-            del ip_last_access[ip]
+    # 清理该 IP 的过期的访问记录
+    log = ip_access_log.get(client_ip, [])
+    log = [t for t in log if now - t < RATE_LIMIT_WINDOW]
+    ip_access_log[client_ip] = log
 
-    # 限流检查
-    last_access = ip_last_access.get(client_ip, 0)
-    if now - last_access < RATE_LIMIT_SECONDS:
-        wait = int(RATE_LIMIT_SECONDS - (now - last_access))
+    # 限流检查：窗口内请求数是否已达上限
+    if len(log) >= RATE_LIMIT_COUNT:
+        wait = int(RATE_LIMIT_WINDOW - (now - log[0]))
         return JSONResponse(
             status_code=429,
             content={"detail": f"请求过于频繁，请 {wait} 秒后再试"}
         )
 
-    ip_last_access[client_ip] = now
+    log.append(now)
 
     # 并发限制
     if request_semaphore.locked():
