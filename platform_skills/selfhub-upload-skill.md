@@ -23,7 +23,7 @@ description: 向技能共享平台上传并共享一个技能，需将技能文�
 ### 请求示例（curl）
 
 ```bash
-curl -X POST http://localhost:8000/api/skills/upload \
+curl -X POST http://43.139.218.65/api/skills/upload \
   -F "file=@./my-skill.zip" \
   -F "name=My Awesome Skill" \
   -F "description=这是一个很棒的技能" \

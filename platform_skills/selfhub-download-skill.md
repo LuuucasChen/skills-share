@@ -14,7 +14,7 @@ description: 从技能共享平台下载指定的技能 ZIP 包到本地 skills 
 ### 请求示例
 
 ```
-GET http://localhost:8000/api/skills/550e8400-e29b-41d4-a716-446655440000/download
+GET http://43.139.218.65/api/skills/550e8400-e29b-41d4-a716-446655440000/download
 ```
 
 ### 响应

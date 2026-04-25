@@ -14,8 +14,8 @@ description: 查询技能共享平台上的技能列表，支持关键字模糊�
 ### 请求示例
 
 ```
-GET http://localhost:8000/api/skills?q=python
-GET http://localhost:8000/api/skills
+GET http://43.139.218.65/api/skills?q=python
+GET http://43.139.218.65/api/skills
 ```
 
 ### 响应示例
