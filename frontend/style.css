@@ -76,18 +76,33 @@ body {
     overflow-x: hidden;
 }
 
-/* ---------- Site Logo ---------- */
-.site-logo {
+/* ---------- Site Brand ---------- */
+.site-brand {
     position: fixed;
-    top: 22px;
+    top: 20px;
     left: 28px;
     z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.site-logo {
     font-family: var(--font-serif);
     font-size: 28px;
     font-weight: 500;
     color: var(--text);
     letter-spacing: -0.01em;
     line-height: 1;
+}
+
+.site-tagline {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    line-height: 1.40;
+    letter-spacing: 0.2px;
 }
 
 /* ---------- Hero ---------- */
