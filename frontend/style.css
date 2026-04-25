@@ -76,6 +76,20 @@ body {
     overflow-x: hidden;
 }
 
+/* ---------- Site Logo ---------- */
+.site-logo {
+    position: fixed;
+    top: 22px;
+    left: 28px;
+    z-index: 50;
+    font-family: var(--font-serif);
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    line-height: 1;
+}
+
 /* ---------- Hero ---------- */
 .hero {
     position: relative;
