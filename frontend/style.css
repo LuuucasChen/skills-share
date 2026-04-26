@@ -503,6 +503,187 @@ main {
     gap: 4px;
 }
 
+.skill-author-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding: 6px 0 2px;
+    border-top: 1px dashed var(--border-warm);
+    margin-top: 2px;
+}
+
+.skill-author-row svg {
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.skill-author-label {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.skill-author-name {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    color: var(--text);
+    font-size: 14px;
+    letter-spacing: 0.2px;
+}
+
+.skill-meta-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ---------- Ghost Button ---------- */
+.btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 7px 12px;
+    border-radius: var(--radius-sm);
+    box-shadow: 0px 0px 0px 1px var(--border-warm);
+}
+
+.btn-ghost:hover {
+    color: var(--accent);
+    background: var(--accent-soft);
+    box-shadow: 0px 0px 0px 1px var(--accent);
+}
+
+/* ---------- Version Modal ---------- */
+.modal-wide {
+    max-width: 600px;
+}
+
+.modal-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+.version-body {
+    padding: 16px 28px 28px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.version-loading {
+    padding: 24px 0;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.version-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0;
+    margin: 0;
+}
+
+.version-empty {
+    text-align: center;
+    padding: 32px 0;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.version-item {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    box-shadow: 0px 0px 0px 1px var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: box-shadow var(--duration) var(--ease);
+}
+
+.version-item:hover {
+    box-shadow: 0px 0px 0px 1px var(--ring);
+}
+
+.version-item-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.version-item-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.version-index {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.version-latest-badge {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--text-inverse);
+    background: var(--accent);
+    padding: 2px 8px;
+    border-radius: 100px;
+}
+
+.version-item-meta {
+    display: inline-flex;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+}
+
+.version-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+}
+
+.version-item-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border-warm);
+    flex-wrap: wrap;
+}
+
+.version-item-info {
+    display: inline-flex;
+    gap: 12px;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+}
+
+.version-md5 {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 11px;
+    background: var(--border-warm);
+    color: var(--text-secondary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+}
+
 /* ---------- Modal ---------- */
 .modal-overlay {
     display: flex;

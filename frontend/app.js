@@ -33,6 +33,14 @@ const totalTagsEl = document.getElementById("totalTags");
 const descEl = document.getElementById("skillDesc");
 const descCountEl = document.getElementById("descCount");
 
+// 历史版本弹窗
+const versionModalOverlay = document.getElementById("versionModalOverlay");
+const versionModalClose = document.getElementById("versionModalClose");
+const versionModalTitle = document.getElementById("versionModalTitle");
+const versionModalSubtitle = document.getElementById("versionModalSubtitle");
+const versionLoading = document.getElementById("versionLoading");
+const versionList = document.getElementById("versionList");
+
 let allSkills = [];
 
 // =========================================================
@@ -163,6 +171,9 @@ function renderSkills(skills) {
             .map((t) => `<span class="skill-tag">${escapeHtml(t)}</span>`)
             .join("");
 
+        const authorName = skill.author || "匿名旅人";
+        const versionCount = Array.isArray(skill.versions) ? skill.versions.length : 1;
+
         card.innerHTML = `
             <div class="skill-card-header">
                 <h3>${escapeHtml(skill.name)}</h3>
@@ -170,6 +181,13 @@ function renderSkills(skills) {
             </div>
             <p class="skill-desc">${escapeHtml(skill.description || "暂无描述")}</p>
             <div class="skill-tags">${tagsHtml || '<span class="skill-tag" style="opacity:0.4;">无标签</span>'}</div>
+            <div class="skill-author-row">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+                <span class="skill-author-label">作者</span>
+                <span class="skill-author-name">${escapeHtml(authorName)}</span>
+            </div>
             <div class="skill-meta">
                 <span class="skill-time">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -177,12 +195,20 @@ function renderSkills(skills) {
                     </svg>
                     ${formatTime(skill.upload_time)}
                 </span>
-                <button class="btn btn-primary btn-sm download-btn" data-id="${skill.id}">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                    下载
-                </button>
+                <div class="skill-meta-actions">
+                    <button class="btn btn-ghost btn-sm history-btn" data-id="${skill.id}" data-name="${escapeHtml(skill.name)}" title="查看历史版本">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><polyline points="3 3 3 8 8 8"/><polyline points="12 7 12 12 15 14"/>
+                        </svg>
+                        v${versionCount}
+                    </button>
+                    <button class="btn btn-primary btn-sm download-btn" data-id="${skill.id}">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        下载
+                    </button>
+                </div>
             </div>
         `;
 
@@ -192,6 +218,9 @@ function renderSkills(skills) {
 
     document.querySelectorAll(".download-btn").forEach((btn) => {
         btn.addEventListener("click", () => downloadSkill(btn.dataset.id));
+    });
+    document.querySelectorAll(".history-btn").forEach((btn) => {
+        btn.addEventListener("click", () => openVersionModal(btn.dataset.id, btn.dataset.name));
     });
 }
 
@@ -391,6 +420,107 @@ uploadForm.addEventListener("submit", async (e) => {
             </svg>
             上传
         `;
+    }
+});
+
+// =========================================================
+// 历史版本弹窗
+// =========================================================
+async function openVersionModal(skillId, skillName) {
+    versionModalTitle.textContent = `历史版本·${skillName}`;
+    versionModalSubtitle.textContent = "正在加载版本列表…";
+    versionList.innerHTML = "";
+    versionLoading.style.display = "block";
+    versionModalOverlay.classList.add("active");
+    document.body.style.overflow = "hidden";
+
+    try {
+        const res = await fetch(`${API_BASE}/api/skills/${skillId}/versions`);
+        if (!res.ok) throw new Error(`请求失败 (${res.status})`);
+        const data = await res.json();
+        const versions = data.versions || [];
+        renderVersions(skillId, versions);
+        versionModalSubtitle.textContent = `共 ${versions.length} 个版本，最多保留 10 个历史版本`;
+    } catch (err) {
+        versionModalSubtitle.textContent = `加载失败: ${err.message}`;
+        versionList.innerHTML = "";
+    } finally {
+        versionLoading.style.display = "none";
+    }
+}
+
+function renderVersions(skillId, versions) {
+    versionList.innerHTML = "";
+    if (!versions.length) {
+        versionList.innerHTML = `<li class="version-empty">暂无历史版本</li>`;
+        return;
+    }
+    versions.forEach((v, idx) => {
+        const isLatest = idx === 0; // 后端按时间降序
+        const tagsHtml = (v.tags || [])
+            .map((t) => `<span class="skill-tag">${escapeHtml(t)}</span>`)
+            .join("");
+        const li = document.createElement("li");
+        li.className = "version-item";
+        li.innerHTML = `
+            <div class="version-item-head">
+                <div class="version-item-title">
+                    <span class="version-index">#${versions.length - idx}</span>
+                    ${isLatest ? '<span class="version-latest-badge">最新</span>' : ''}
+                </div>
+                <div class="version-item-meta">
+                    <span>作者 · ${escapeHtml(v.author || "匿名旅人")}</span>
+                    <span>${formatTime(v.upload_time)}</span>
+                </div>
+            </div>
+            ${v.description ? `<p class="version-desc">${escapeHtml(v.description)}</p>` : ""}
+            ${tagsHtml ? `<div class="skill-tags">${tagsHtml}</div>` : ""}
+            <div class="version-item-foot">
+                <div class="version-item-info">
+                    <span>${v.file_count || 0} 个文件</span>
+                    <span>${v.file_size_readable || formatSize(v.file_size || 0)}</span>
+                    <code class="version-md5" title="ZIP MD5">${(v.md5 || "").slice(0, 10)}</code>
+                </div>
+                <button class="btn btn-secondary btn-sm version-download" data-skill="${skillId}" data-version="${v.id}">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    下载此版本
+                </button>
+            </div>
+        `;
+        versionList.appendChild(li);
+    });
+
+    versionList.querySelectorAll(".version-download").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            downloadSkillVersion(btn.dataset.skill, btn.dataset.version);
+        });
+    });
+}
+
+function downloadSkillVersion(skillId, versionId) {
+    const a = document.createElement("a");
+    a.href = `${API_BASE}/api/skills/${skillId}/versions/${versionId}/download`;
+    a.download = "";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+function closeVersionModal() {
+    versionModalOverlay.classList.remove("active");
+    document.body.style.overflow = "";
+}
+
+versionModalClose.addEventListener("click", closeVersionModal);
+versionModalOverlay.addEventListener("click", (e) => {
+    if (e.target === versionModalOverlay) closeVersionModal();
+});
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && versionModalOverlay.classList.contains("active")) {
+        closeVersionModal();
     }
 });
 

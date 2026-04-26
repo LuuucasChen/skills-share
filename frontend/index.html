@@ -154,6 +154,27 @@
         </div>
     </div>
 
+    <!-- ========== 历史版本弹窗 ========== -->
+    <div class="modal-overlay" id="versionModalOverlay">
+        <div class="modal modal-wide">
+            <div class="modal-header">
+                <div>
+                    <h2 id="versionModalTitle">历史版本</h2>
+                    <p class="modal-subtitle" id="versionModalSubtitle">查看与下载已保存的历史版本</p>
+                </div>
+                <button class="modal-close" id="versionModalClose" aria-label="关闭">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 6 6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="version-body" id="versionBody">
+                <div class="version-loading" id="versionLoading">加载中…</div>
+                <ul class="version-list" id="versionList"></ul>
+            </div>
+        </div>
+    </div>
+
     <!-- ========== Toast ========== -->
     <div class="toast-container" id="toastContainer"></div>
 

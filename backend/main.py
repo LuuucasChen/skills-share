@@ -5,11 +5,15 @@ import json
 import uuid
 import shutil
 import zipfile
+import hashlib
 import time
 from urllib.parse import quote
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
+
+DEFAULT_AUTHOR = "匿名旅人"  # 上传时未提供作者名的密即默认展示名
+MAX_VERSIONS = 10               # 每个技能最多保留的历史版本数
 
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Query, Request
 from fastapi.responses import FileResponse, JSONResponse
@@ -117,10 +121,28 @@ def format_size(bytes_: int) -> str:
 
 
 # ---------------------------------------------------------------------------
-# 元数据结构归一化（兼容新旧格式）
+# 并发锁：按 skill name 细粒度锁，保证同名 skill 上传串行化
+# ---------------------------------------------------------------------------
+_upload_locks: dict[str, asyncio.Lock] = {}
+_locks_guard = asyncio.Lock()
+
+
+async def get_upload_lock(name: str) -> asyncio.Lock:
+    async with _locks_guard:
+        if name not in _upload_locks:
+            _upload_locks[name] = asyncio.Lock()
+        return _upload_locks[name]
+
+
+# ---------------------------------------------------------------------------
+# 元数据结构归一化（兼容旧格式）
 # ---------------------------------------------------------------------------
 def normalize_skill(skill: dict) -> dict:
-    """将旧格式（单文件）自动升级为新格式（files 数组）"""
+    """
+    将旧格式记录升级为带 versions 的新格式。
+    新格式：顶层字段为最新版，`versions` 为历史版本列表（含最新版，按时间升序）。
+    """
+    # 旧版：单文件 -> files 数组
     if "files" not in skill:
         old_filename = skill.pop("filename", "")
         old_original = skill.pop("original_filename", "")
@@ -135,6 +157,31 @@ def normalize_skill(skill: dict) -> dict:
         skill["file_count"] = len(skill["files"])
         skill["file_size"] = old_size
         skill["file_size_readable"] = format_size(old_size)
+
+    # 补全 author
+    if not skill.get("author"):
+        skill["author"] = DEFAULT_AUTHOR
+
+    # 补全 md5（旧记录暂用空字符串，下次上传时会刷新）
+    if "md5" not in skill:
+        skill["md5"] = ""
+
+    # 补全 versions（没有时将当前记录包装为单版本）
+    if "versions" not in skill:
+        skill["versions"] = [
+            {
+                "id": skill.get("id", str(uuid.uuid4())),
+                "md5": skill.get("md5", ""),
+                "author": skill.get("author", DEFAULT_AUTHOR),
+                "description": skill.get("description", ""),
+                "tags": skill.get("tags", []),
+                "files": skill.get("files", []),
+                "file_count": skill.get("file_count", 0),
+                "file_size": skill.get("file_size", 0),
+                "file_size_readable": skill.get("file_size_readable", format_size(skill.get("file_size", 0))),
+                "upload_time": skill.get("upload_time", datetime.now().isoformat()),
+            }
+        ]
     return skill
 
 
@@ -162,27 +209,16 @@ async def query_skills(q: Optional[str] = Query(None)):
 
 
 # ---------------------------------------------------------------------------
-# API: 下载技能（直接返回存储的 ZIP）
+# 下载响应构造器
 # ---------------------------------------------------------------------------
-@app.get("/api/skills/{skill_id}/download")
-async def download_skill(skill_id: str):
-    """根据 skill_id 返回该技能对应的 ZIP 包下载。"""
-    skills = [normalize_skill(s) for s in load_metadata()]
-    skill = next((s for s in skills if s["id"] == skill_id), None)
-    if not skill:
-        raise HTTPException(status_code=404, detail="技能不存在")
-
-    zip_path = FILES_DIR / f"{skill_id}.zip"
+def _build_zip_response(zip_path: Path, skill_name: str) -> FileResponse:
+    """下载响应构造器，兼容中文文件名（RFC 5987）。"""
     if not zip_path.exists():
         raise HTTPException(status_code=404, detail="技能文件已被删除")
 
-    # 对中文文件名做 RFC 5987 编码
-    ascii_name = skill["name"].encode("ascii", "replace").decode("ascii")
-    if ascii_name == skill["name"]:
-        filename = f"{skill['name']}.zip"
-    else:
-        filename = f"{ascii_name}.zip"
-
+    ascii_name = skill_name.encode("ascii", "replace").decode("ascii")
+    filename = f"{skill_name}.zip" if ascii_name == skill_name else f"{ascii_name}.zip"
+    encoded = quote(f"{skill_name}.zip")
     return FileResponse(
         path=str(zip_path),
         filename=filename,
@@ -190,10 +226,60 @@ async def download_skill(skill_id: str):
         headers={
             "Content-Disposition": (
                 f'attachment; filename="{filename}"; '
-                f"filename*=UTF-8''{quote(f'{skill["name"]}.zip')}"
+                f"filename*=UTF-8''{encoded}"
             )
         },
     )
+
+
+# ---------------------------------------------------------------------------
+# API: 下载技能（最新版）
+# ---------------------------------------------------------------------------
+@app.get("/api/skills/{skill_id}/download")
+async def download_skill(skill_id: str):
+    """根据 skill_id 返回最新版本的 ZIP 下载。"""
+    skills = [normalize_skill(s) for s in load_metadata()]
+    skill = next((s for s in skills if s["id"] == skill_id), None)
+    if not skill:
+        raise HTTPException(status_code=404, detail="技能不存在")
+    return _build_zip_response(FILES_DIR / f"{skill_id}.zip", skill["name"])
+
+
+# ---------------------------------------------------------------------------
+# API: 技能历史版本列表
+# ---------------------------------------------------------------------------
+@app.get("/api/skills/{skill_id}/versions")
+async def list_skill_versions(skill_id: str):
+    """返回指定技能的历史版本列表（按 upload_time 降序）。"""
+    skills = [normalize_skill(s) for s in load_metadata()]
+    skill = next((s for s in skills if s["id"] == skill_id), None)
+    if not skill:
+        raise HTTPException(status_code=404, detail="技能不存在")
+
+    versions = sorted(
+        skill.get("versions", []),
+        key=lambda v: v.get("upload_time", ""),
+        reverse=True,
+    )
+    return {"skill_id": skill["id"], "name": skill["name"], "versions": versions}
+
+
+# ---------------------------------------------------------------------------
+# API: 下载指定历史版本
+# ---------------------------------------------------------------------------
+@app.get("/api/skills/{skill_id}/versions/{version_id}/download")
+async def download_skill_version(skill_id: str, version_id: str):
+    """下载指定技能的指定历史版本。"""
+    skills = [normalize_skill(s) for s in load_metadata()]
+    skill = next((s for s in skills if s["id"] == skill_id), None)
+    if not skill:
+        raise HTTPException(status_code=404, detail="技能不存在")
+
+    version = next((v for v in skill.get("versions", []) if v["id"] == version_id), None)
+    if not version:
+        raise HTTPException(status_code=404, detail="版本不存在")
+
+    return _build_zip_response(FILES_DIR / f"{version_id}.zip", skill["name"])
 
 
 # ---------------------------------------------------------------------------
@@ -205,6 +291,7 @@ async def upload_skill(
     name: str = Form(...),
     description: str = Form(""),
     tags: str = Form(""),
+    author: str = Form(""),
 ):
     """
     上传并共享一个技能。
@@ -213,7 +300,14 @@ async def upload_skill(
     - `name`: 技能名称
     - `description`: 技能描述（可选）
     - `tags`: 标签，多个标签以英文逗号分隔（可选）
+    - `author`: 作者名，由当前 Agent 填入自己的名字（可选，默认 匿名旅人）
     - 文件大小不能超过 50MB
+
+    行为说明：
+    - 同名技能按 ZIP 的 MD5 判定：
+      - 首次上传：新建记录
+      - MD5 与最新版相同：幂等（仅刷新元数据）
+      - MD5 不同：新增历史版本，超过 MAX_VERSIONS 时 FIFO 淘汰最旧版本
     """
     if not file or not file.filename:
         raise HTTPException(status_code=400, detail="请选择一个文件")
@@ -221,7 +315,6 @@ async def upload_skill(
     if not file.filename.lower().endswith(".zip"):
         raise HTTPException(status_code=400, detail="仅支持 .zip 压缩包格式")
 
-    skill_id = str(uuid.uuid4())
     zip_content = await file.read()
     raw_size = len(zip_content)
 
@@ -247,39 +340,108 @@ async def upload_skill(
     if not file_infos:
         raise HTTPException(status_code=400, detail="ZIP 文件中没有有效文件")
 
-    # 直接保存原 ZIP（目录结构完整保留）
-    zip_path = FILES_DIR / f"{skill_id}.zip"
-    with open(zip_path, "wb") as f:
-        f.write(zip_content)
-
+    md5 = hashlib.md5(zip_content).hexdigest()
+    author_clean = (author or "").strip() or DEFAULT_AUTHOR
     tags_list = [t.strip() for t in tags.split(",") if t.strip()]
+    now_iso = datetime.now().isoformat()
+    size_readable = format_size(raw_size)
 
-    skills = load_metadata()
+    # 按 skill name 获取细粒度锁，保证同名串行化
+    lock = await get_upload_lock(name)
+    async with lock:
+        skills = [normalize_skill(s) for s in load_metadata()]
+        existing = next((s for s in skills if s["name"] == name), None)
 
-    # 同名覆盖：删除旧的 skill 文件和记录
-    existing = [s for s in skills if s["name"] == name]
-    for old in existing:
-        old_zip = FILES_DIR / f"{old['id']}.zip"
-        if old_zip.exists():
-            old_zip.unlink()
-        skills.remove(old)
+        is_new_version = False
+        is_duplicate = False
 
-    metadata = {
-        "id": skill_id,
-        "name": name,
-        "description": description,
-        "tags": tags_list,
-        "files": file_infos,
-        "file_count": len(file_infos),
-        "file_size": raw_size,
-        "file_size_readable": format_size(raw_size),
-        "upload_time": datetime.now().isoformat(),
+        if existing is None:
+            # 分支 1：不存在同名，新建
+            skill_id = str(uuid.uuid4())
+            version_id = skill_id
+            with open(FILES_DIR / f"{version_id}.zip", "wb") as f:
+                f.write(zip_content)
+
+            version_record = {
+                "id": version_id, "md5": md5, "author": author_clean,
+                "description": description, "tags": tags_list, "files": file_infos,
+                "file_count": len(file_infos), "file_size": raw_size,
+                "file_size_readable": size_readable, "upload_time": now_iso,
+            }
+            skill = {
+                "id": skill_id, "name": name, "md5": md5, "author": author_clean,
+                "description": description, "tags": tags_list, "files": file_infos,
+                "file_count": len(file_infos), "file_size": raw_size,
+                "file_size_readable": size_readable, "upload_time": now_iso,
+                "versions": [version_record],
+            }
+            skills.append(skill)
+            is_new_version = True
+
+        else:
+            versions = existing.get("versions", [])
+            latest_md5 = versions[-1].get("md5", "") if versions else existing.get("md5", "")
+
+            if versions and latest_md5 == md5:
+                # 分支 2：MD5 相同，幂等（不写磁盘、不新增版本）
+                latest = versions[-1]
+                latest["author"] = author_clean
+                latest["description"] = description
+                latest["tags"] = tags_list
+                latest["upload_time"] = now_iso
+                existing["author"] = author_clean
+                existing["description"] = description
+                existing["tags"] = tags_list
+                existing["upload_time"] = now_iso
+                skill = existing
+                is_duplicate = True
+            else:
+                # 分支 3：MD5 不同，新增历史版本
+                version_id = str(uuid.uuid4())
+                with open(FILES_DIR / f"{version_id}.zip", "wb") as f:
+                    f.write(zip_content)
+
+                version_record = {
+                    "id": version_id, "md5": md5, "author": author_clean,
+                    "description": description, "tags": tags_list, "files": file_infos,
+                    "file_count": len(file_infos), "file_size": raw_size,
+                    "file_size_readable": size_readable, "upload_time": now_iso,
+                }
+                versions.append(version_record)
+
+                # FIFO 淘汰最旧版本
+                while len(versions) > MAX_VERSIONS:
+                    oldest = versions.pop(0)
+                    old_zip = FILES_DIR / f"{oldest['id']}.zip"
+                    if old_zip.exists():
+                        try:
+                            old_zip.unlink()
+                        except OSError:
+                            pass
+
+                # 顶层字段同步（id 指向最新版）
+                existing["id"] = version_id
+                existing["md5"] = md5
+                existing["author"] = author_clean
+                existing["description"] = description
+                existing["tags"] = tags_list
+                existing["files"] = file_infos
+                existing["file_count"] = len(file_infos)
+                existing["file_size"] = raw_size
+                existing["file_size_readable"] = size_readable
+                existing["upload_time"] = now_iso
+                existing["versions"] = versions
+                skill = existing
+                is_new_version = True
+
+        save_metadata(skills)
+
+    return {
+        "message": "上传成功",
+        "skill": skill,
+        "is_new_version": is_new_version,
+        "is_duplicate": is_duplicate,
     }
-
-    skills.append(metadata)
-    save_metadata(skills)
-
-    return {"message": "上传成功", "skill": metadata}
 
 
 # ---------------------------------------------------------------------------
