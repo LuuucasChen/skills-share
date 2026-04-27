@@ -42,6 +42,28 @@ const versionLoading = document.getElementById("versionLoading");
 const versionList = document.getElementById("versionList");
 
 let allSkills = [];
+let currentSort = "time";  // 默认按更新时间降序
+
+// =========================================================
+// 排序
+// =========================================================
+function sortSkills(skills, sort) {
+    const arr = [...skills];
+    if (sort === "downloads") {
+        arr.sort((a, b) => {
+            const da = a.download_count || 0;
+            const db = b.download_count || 0;
+            if (db !== da) return db - da;
+            return (b.upload_time || "") > (a.upload_time || "") ? 1 : -1;
+        });
+    } else {
+        // 默认按 upload_time 降序
+        arr.sort((a, b) =>
+            (b.upload_time || "") > (a.upload_time || "") ? 1 : -1
+        );
+    }
+    return arr;
+}
 
 // =========================================================
 // Toast
@@ -137,7 +159,7 @@ async function fetchSkills() {
         if (!res.ok) throw new Error(`请求失败 (${res.status})`);
         allSkills = await res.json();
         updateStats(allSkills);
-        renderSkills(allSkills);
+        renderSkills(sortSkills(allSkills, currentSort));
     } catch (err) {
         errorMessage.textContent = `获取技能列表失败: ${err.message}`;
         errorState.style.display = "block";
@@ -173,6 +195,7 @@ function renderSkills(skills) {
 
         const authorName = skill.author || "匿名旅人";
         const versionCount = Array.isArray(skill.versions) ? skill.versions.length : 1;
+        const dlCount = skill.download_count || 0;
 
         card.innerHTML = `
             <div class="skill-card-header">
@@ -194,6 +217,12 @@ function renderSkills(skills) {
                         <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
                     </svg>
                     ${formatTime(skill.upload_time)}
+                </span>
+                <span class="skill-dl-count" title="下载次数">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    ${dlCount}
                 </span>
                 <div class="skill-meta-actions">
                     <button class="btn btn-ghost btn-sm history-btn" data-id="${skill.id}" data-name="${escapeHtml(skill.name)}" title="查看历史版本">
@@ -241,13 +270,13 @@ function filterSkills() {
             (s.description || "").toLowerCase().includes(q) ||
             (s.tags || []).some((t) => t.toLowerCase().includes(q))
     );
-    renderSkills(filtered);
+    renderSkills(sortSkills(filtered, currentSort));
 }
 
 searchClear.addEventListener("click", () => {
     searchInput.value = "";
     searchClear.classList.remove("visible");
-    renderSkills(allSkills);
+    renderSkills(sortSkills(allSkills, currentSort));
     searchInput.focus();
 });
 
@@ -255,6 +284,30 @@ let searchTimer;
 searchInput.addEventListener("input", () => {
     clearTimeout(searchTimer);
     searchTimer = setTimeout(filterSkills, 250);
+});
+
+// =========================================================
+// 排序按钮
+// =========================================================
+document.querySelectorAll(".sort-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+        if (btn.dataset.sort === currentSort) return;
+        currentSort = btn.dataset.sort;
+        document.querySelectorAll(".sort-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        const q = searchInput.value.trim().toLowerCase();
+        if (q) {
+            const filtered = allSkills.filter(
+                (s) =>
+                    s.name.toLowerCase().includes(q) ||
+                    (s.description || "").toLowerCase().includes(q) ||
+                    (s.tags || []).some((t) => t.toLowerCase().includes(q))
+            );
+            renderSkills(sortSkills(filtered, currentSort));
+        } else {
+            renderSkills(sortSkills(allSkills, currentSort));
+        }
+    });
 });
 
 // =========================================================

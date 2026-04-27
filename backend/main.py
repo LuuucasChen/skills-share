@@ -16,7 +16,7 @@ DEFAULT_AUTHOR = "匿名旅人"  # 上传时未提供作者名的密即默认展
 MAX_VERSIONS = 10               # 每个技能最多保留的历史版本数
 
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Query, Request
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -43,6 +43,19 @@ RATE_LIMIT_COUNT = 10             # 每个 IP 在窗口内最多请求次数
 request_semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
 ip_access_log: dict[str, list[float]] = {}
 
+# Markdown 文档接口独立限流（与全局限流互不干扰）
+MD_RATE_LIMIT_WINDOW = 60
+MD_RATE_LIMIT_COUNT  = 10
+md_ip_access_log: dict[str, list[float]] = {}
+
+# 白名单：仅允许在线读取的 Markdown 文件，防止路径穿越
+ALLOWED_MD_FILES = {
+    "selfhub-upload-skill.md",
+    "selfhub-download-skill.md",
+    "selfhub-install-skill.md",
+    "selfhub-query-skills.md",
+}
+
 
 @app.middleware("http")
 async def security_middleware(request: Request, call_next):
@@ -51,6 +64,11 @@ async def security_middleware(request: Request, call_next):
     1. 限流 — 同一 IP 30 秒内最多请求 10 次
     2. 并发 — 最多同时处理 2 个请求
     """
+    # Markdown 文档接口走独立限流，跳过全局速率与并发控制
+    if request.url.path.startswith("/api/markdown/"):
+        response = await call_next(request)
+        return response
+
     client_ip = request.client.host
     now = time.time()
 
@@ -86,6 +104,7 @@ FILES_DIR = STORAGE_DIR / "files"
 METADATA_FILE = STORAGE_DIR / "metadata.json"
 FRONTEND_DIR = BASE_DIR / "frontend"
 GAMES_DIR = BASE_DIR / "games"
+PLATFORM_SKILLS_DIR = BASE_DIR / "platform_skills"  # 平台原生技能文档目录
 
 MAX_UPLOAD_SIZE = 50 * 1024 * 1024  # 50 MB 总上传限制
 
@@ -125,6 +144,7 @@ def format_size(bytes_: int) -> str:
 # ---------------------------------------------------------------------------
 _upload_locks: dict[str, asyncio.Lock] = {}
 _locks_guard = asyncio.Lock()
+_download_count_lock = asyncio.Lock()          # 保护下载计数写入
 
 
 async def get_upload_lock(name: str) -> asyncio.Lock:
@@ -165,6 +185,10 @@ def normalize_skill(skill: dict) -> dict:
     # 补全 md5（旧记录暂用空字符串，下次上传时会刷新）
     if "md5" not in skill:
         skill["md5"] = ""
+
+    # 补全 download_count（旧记录默认 0）
+    if "download_count" not in skill:
+        skill["download_count"] = 0
 
     # 补全 versions（没有时将当前记录包装为单版本）
     if "versions" not in skill:
@@ -237,11 +261,21 @@ def _build_zip_response(zip_path: Path, skill_name: str) -> FileResponse:
 # ---------------------------------------------------------------------------
 @app.get("/api/skills/{skill_id}/download")
 async def download_skill(skill_id: str):
-    """根据 skill_id 返回最新版本的 ZIP 下载。"""
+    """根据 skill_id 返回最新版本的 ZIP 下载，并累加下载计数。"""
     skills = [normalize_skill(s) for s in load_metadata()]
     skill = next((s for s in skills if s["id"] == skill_id), None)
     if not skill:
         raise HTTPException(status_code=404, detail="技能不存在")
+
+    # 持久化累加下载计数
+    async with _download_count_lock:
+        raw = load_metadata()
+        for s in raw:
+            if s.get("id") == skill_id:
+                s["download_count"] = s.get("download_count", 0) + 1
+                save_metadata(raw)
+                break
+
     return _build_zip_response(FILES_DIR / f"{skill_id}.zip", skill["name"])
 
 
@@ -278,6 +312,15 @@ async def download_skill_version(skill_id: str, version_id: str):
     version = next((v for v in skill.get("versions", []) if v["id"] == version_id), None)
     if not version:
         raise HTTPException(status_code=404, detail="版本不存在")
+
+    # 持久化累加下载计数（计在顶层 skill 上）
+    async with _download_count_lock:
+        raw = load_metadata()
+        for s in raw:
+            if s.get("id") == skill_id:
+                s["download_count"] = s.get("download_count", 0) + 1
+                save_metadata(raw)
+                break
 
     return _build_zip_response(FILES_DIR / f"{version_id}.zip", skill["name"])
 
@@ -442,6 +485,46 @@ async def upload_skill(
         "is_new_version": is_new_version,
         "is_duplicate": is_duplicate,
     }
+
+
+# ---------------------------------------------------------------------------
+# API: 在线读取平台原生技能文档（Markdown）
+# ---------------------------------------------------------------------------
+@app.get("/api/markdown/{filename}")
+async def get_markdown(filename: str, request: Request):
+    """
+    返回平台原生技能文档的 Markdown 原文。
+
+    - 白名单限制，仅允许读取 4 个平台技能文档，防止路径穿越
+    - 独立限流：同一 IP 60 秒内最多请求 10 次
+    """
+    # 独立限流
+    client_ip = request.client.host
+    now = time.time()
+    log = md_ip_access_log.get(client_ip, [])
+    log = [t for t in log if now - t < MD_RATE_LIMIT_WINDOW]
+    if len(log) >= MD_RATE_LIMIT_COUNT:
+        wait = int(MD_RATE_LIMIT_WINDOW - (now - log[0]))
+        raise HTTPException(
+            status_code=429,
+            detail=f"文档请求过于频繁，请 {wait} 秒后再试"
+        )
+    log.append(now)
+    md_ip_access_log[client_ip] = log
+
+    # 白名单校验
+    if filename not in ALLOWED_MD_FILES:
+        raise HTTPException(status_code=404, detail="文档不存在")
+
+    md_path = PLATFORM_SKILLS_DIR / filename
+    if not md_path.exists():
+        raise HTTPException(status_code=404, detail="文档文件未找到")
+
+    content = md_path.read_text(encoding="utf-8")
+    return PlainTextResponse(
+        content,
+        headers={"Content-Type": "text/markdown; charset=utf-8"},
+    )
 
 
 # ---------------------------------------------------------------------------

@@ -1073,3 +1073,528 @@ main {
         transform: none;
     }
 }
+
+/* ==========================================================
+   排序按钮
+   ========================================================== */
+.sort-group {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.sort-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid var(--border-warm);
+    cursor: pointer;
+    transition: color var(--duration) var(--ease),
+                background var(--duration) var(--ease),
+                border-color var(--duration) var(--ease),
+                box-shadow var(--duration) var(--ease);
+    white-space: nowrap;
+    line-height: 1;
+}
+
+.sort-btn:hover {
+    color: var(--text);
+    background: var(--surface-hover);
+    border-color: var(--ring);
+}
+
+.sort-btn.active {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+/* 下载次数小标签 */
+.skill-dl-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ==========================================================
+   导航按钮 — 使用教程（右上角 fixed）
+   ========================================================== */
+.nav-tutorial {
+    position: fixed;
+    top: 18px;
+    right: 24px;
+    z-index: 200;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--surface);
+    border: 1px solid var(--border-warm);
+    border-radius: var(--radius-max);
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: color var(--duration) var(--ease),
+                background var(--duration) var(--ease),
+                border-color var(--duration) var(--ease),
+                box-shadow var(--duration) var(--ease);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.nav-tutorial:hover {
+    color: var(--accent);
+    background: var(--surface-hover);
+    border-color: var(--accent);
+    box-shadow: 0 4px 16px rgba(201,100,66,0.12);
+}
+
+/* ==========================================================
+   使用教程页 — 全局布局
+   ========================================================== */
+.tutorial-main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 100px;
+}
+
+.back-home {
+    position: fixed;
+    top: 18px;
+    left: 200px;
+    z-index: 200;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--surface);
+    border: 1px solid var(--border-warm);
+    border-radius: var(--radius-max);
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: color var(--duration) var(--ease),
+                background var(--duration) var(--ease),
+                border-color var(--duration) var(--ease),
+                box-shadow var(--duration) var(--ease);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.back-home:hover {
+    color: var(--accent);
+    background: var(--surface-hover);
+    border-color: var(--accent);
+}
+
+/* 教程区块 */
+.tut-section {
+    margin-bottom: 64px;
+}
+
+.tut-section-title {
+    font-family: var(--font-serif);
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--border-warm);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tut-section-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    font-family: var(--font-sans);
+    flex-shrink: 0;
+}
+
+.tut-section-desc {
+    color: var(--text-secondary);
+    font-size: 15px;
+    margin-bottom: 28px;
+    line-height: 1.7;
+}
+
+/* 平台介绍 卡片 */
+.intro-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.intro-card {
+    background: var(--surface);
+    border: 1px solid var(--border-warm);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow-whisper);
+}
+
+.intro-card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--accent-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    margin-bottom: 12px;
+}
+
+.intro-card h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+
+.intro-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* 技能文档卡片 */
+.doc-card {
+    background: var(--surface);
+    border: 1px solid var(--border-warm);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-whisper);
+    transition: box-shadow var(--duration) var(--ease);
+}
+
+.doc-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.doc-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+    gap: 12px;
+}
+
+.doc-card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+}
+
+.doc-card-title h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.doc-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.doc-card-toggle {
+    flex-shrink: 0;
+    color: var(--text-muted);
+    transition: transform var(--duration) var(--ease);
+}
+
+.doc-card.open .doc-card-toggle {
+    transform: rotate(180deg);
+}
+
+.doc-card-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s var(--ease-out);
+    border-top: 0 solid var(--border-warm);
+}
+
+.doc-card.open .doc-card-body {
+    max-height: 2000px;
+    border-top-width: 1px;
+}
+
+.md-loading {
+    padding: 32px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.md-content {
+    padding: 24px 28px;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text);
+}
+
+.md-content h1, .md-content h2, .md-content h3 {
+    font-family: var(--font-serif);
+    color: var(--text);
+    margin: 20px 0 10px;
+    line-height: 1.3;
+}
+
+.md-content h1 { font-size: 1.3rem; }
+.md-content h2 { font-size: 1.15rem; border-bottom: 1px solid var(--border-warm); padding-bottom: 6px; }
+.md-content h3 { font-size: 1rem; }
+
+.md-content p { margin: 10px 0; }
+.md-content ul, .md-content ol { padding-left: 20px; margin: 10px 0; }
+.md-content li { margin: 4px 0; }
+
+.md-content code {
+    background: var(--bg-warm);
+    border: 1px solid var(--border-warm);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 12.5px;
+    font-family: "SF Mono", Consolas, "Liberation Mono", monospace;
+}
+
+.md-content pre {
+    background: var(--bg-warm);
+    border: 1px solid var(--border-warm);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    overflow-x: auto;
+    margin: 14px 0;
+}
+
+.md-content pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13px;
+}
+
+.md-content blockquote {
+    border-left: 3px solid var(--accent);
+    margin: 14px 0;
+    padding: 8px 16px;
+    color: var(--text-secondary);
+    background: var(--accent-soft);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.md-content a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.md-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 13px;
+}
+
+.md-content th, .md-content td {
+    padding: 8px 12px;
+    border: 1px solid var(--border-warm);
+    text-align: left;
+}
+
+.md-content th {
+    background: var(--bg-warm);
+    font-weight: 600;
+}
+
+/* 一键安装指南 */
+.install-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.install-item {
+    background: var(--surface);
+    border: 1px solid var(--border-warm);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    box-shadow: var(--shadow-whisper);
+}
+
+.install-item-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--text-inverse);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.install-item-body h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+.install-item-body p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.install-item-body .code-line {
+    display: block;
+    background: var(--bg-warm);
+    border: 1px solid var(--border-warm);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-family: "SF Mono", Consolas, "Liberation Mono", monospace;
+    font-size: 12px;
+    color: var(--text);
+    word-break: break-all;
+    margin: 4px 0;
+}
+
+.install-link-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.install-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--bg-warm);
+    border: 1px solid var(--border-warm);
+    border-radius: var(--radius-sm);
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all var(--duration) var(--ease);
+    word-break: break-all;
+}
+
+.install-link-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.install-link-btn svg {
+    flex-shrink: 0;
+    color: var(--accent);
+}
+
+/* 快速上传示例 */
+.curl-block {
+    background: var(--bg-warm);
+    border: 1px solid var(--border-warm);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-top: 20px;
+}
+
+.curl-block pre {
+    font-family: "SF Mono", Consolas, "Liberation Mono", monospace;
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-break: break-all;
+    overflow-x: auto;
+}
+
+.curl-block .comment {
+    color: var(--text-muted);
+}
+
+/* 教程页 Hero 调整 */
+.tutorial-page .hero {
+    padding-bottom: 40px;
+}
+
+/* 响应式调整 */
+@media (max-width: 640px) {
+    .back-home {
+        left: auto;
+        right: 120px;
+        font-size: 12px;
+        padding: 7px 10px;
+    }
+
+    .nav-tutorial {
+        font-size: 12px;
+        padding: 7px 10px;
+    }
+
+    .sort-group {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .tutorial-main {
+        padding: 20px 16px 80px;
+    }
+
+    .intro-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .install-link-grid {
+        grid-template-columns: 1fr;
+    }
+}

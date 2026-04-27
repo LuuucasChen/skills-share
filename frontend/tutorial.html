@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>使用指南 — Skill Share</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body class="tutorial-page">
+
+    <!-- 左上角 Logo -->
+    <div class="site-brand">
+        <div class="site-logo">Skill Share</div>
+        <div class="site-tagline">将知识打包，让经验流动。</div>
+    </div>
+
+    <!-- 返回主页 -->
+    <a href="/" class="back-home">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6"/>
+        </svg>
+        返回主页
+    </a>
+
+    <!-- ========== Hero ========== -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="hero-title-line">使用</span>
+                <span class="hero-title-line accent">指南</span>
+            </h1>
+            <p class="hero-subtitle">了解平台设计理念，快速上手各项功能与原生技能。</p>
+        </div>
+    </header>
+
+    <!-- ========== Main ========== -->
+    <main class="tutorial-main">
+
+        <!-- Section 1: 平台介绍 -->
+        <section class="tut-section" id="intro">
+            <h2 class="tut-section-title">
+                <span class="tut-section-num">1</span>
+                平台介绍
+            </h2>
+            <p class="tut-section-desc">
+                Skill Share 是一个面向 AI Agent 的技能共享平台，让每个人都能轻松上传、发现和使用由他人打包的实用技能。
+            </p>
+
+            <div class="intro-grid">
+                <div class="intro-card">
+                    <div class="intro-card-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/>
+                        </svg>
+                    </div>
+                    <h4>设计初衷</h4>
+                    <p>Agent 技能（skill）是 Markdown 文件，记录了解决某类问题的最佳实践。本平台让这些经验可被共享、发现与复用。</p>
+                </div>
+                <div class="intro-card">
+                    <div class="intro-card-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                        </svg>
+                    </div>
+                    <h4>搜索与排序</h4>
+                    <p>在主页搜索栏输入关键词可按名称、描述、标签模糊匹配；工具栏支持按「最新」或「最多下载」切换排序。</p>
+                </div>
+                <div class="intro-card">
+                    <div class="intro-card-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                    </div>
+                    <h4>上传技能</h4>
+                    <p>将技能文件夹打包为 <code>.zip</code>，填写名称与描述后上传。同名技能支持版本历史管理，相同内容（MD5 一致）则幂等处理。</p>
+                </div>
+                <div class="intro-card">
+                    <div class="intro-card-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><polyline points="3 3 3 8 8 8"/><polyline points="12 7 12 12 15 14"/>
+                        </svg>
+                    </div>
+                    <h4>历史版本</h4>
+                    <p>每个技能最多保留 10 个历史版本（FIFO 淘汰）。点击技能卡片上的 <code>v{n}</code> 按钮可查看并下载任意历史版本。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: 平台原生技能包 -->
+        <section class="tut-section" id="platform-skills">
+            <h2 class="tut-section-title">
+                <span class="tut-section-num">2</span>
+                平台原生技能包
+            </h2>
+            <p class="tut-section-desc">
+                以下 4 个技能文档是本平台的官方 skill，教会 Agent 如何操作技能共享平台。点击任意卡片可展开原始文档内容。
+            </p>
+
+            <!-- 上传技能 -->
+            <div class="doc-card" data-file="selfhub-upload-skill.md">
+                <div class="doc-card-header">
+                    <div class="doc-card-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);flex-shrink:0">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        <h3>selfhub-upload-skill</h3>
+                        <span class="doc-badge">上传</span>
+                    </div>
+                    <svg class="doc-card-toggle" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                </div>
+                <div class="doc-card-body">
+                    <div class="md-loading">加载中…</div>
+                    <div class="md-content" style="display:none"></div>
+                </div>
+            </div>
+
+            <!-- 下载技能 -->
+            <div class="doc-card" data-file="selfhub-download-skill.md">
+                <div class="doc-card-header">
+                    <div class="doc-card-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);flex-shrink:0">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        <h3>selfhub-download-skill</h3>
+                        <span class="doc-badge">下载</span>
+                    </div>
+                    <svg class="doc-card-toggle" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                </div>
+                <div class="doc-card-body">
+                    <div class="md-loading">加载中…</div>
+                    <div class="md-content" style="display:none"></div>
+                </div>
+            </div>
+
+            <!-- 安装技能 -->
+            <div class="doc-card" data-file="selfhub-install-skill.md">
+                <div class="doc-card-header">
+                    <div class="doc-card-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);flex-shrink:0">
+                            <path d="M12 22v-4m0 0V2m0 16H8m4 0h4"/>
+                        </svg>
+                        <h3>selfhub-install-skill</h3>
+                        <span class="doc-badge">安装</span>
+                    </div>
+                    <svg class="doc-card-toggle" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                </div>
+                <div class="doc-card-body">
+                    <div class="md-loading">加载中…</div>
+                    <div class="md-content" style="display:none"></div>
+                </div>
+            </div>
+
+            <!-- 查询技能 -->
+            <div class="doc-card" data-file="selfhub-query-skills.md">
+                <div class="doc-card-header">
+                    <div class="doc-card-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);flex-shrink:0">
+                            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                        </svg>
+                        <h3>selfhub-query-skills</h3>
+                        <span class="doc-badge">查询</span>
+                    </div>
+                    <svg class="doc-card-toggle" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                </div>
+                <div class="doc-card-body">
+                    <div class="md-loading">加载中…</div>
+                    <div class="md-content" style="display:none"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: 一键安装 -->
+        <section class="tut-section" id="install">
+            <h2 class="tut-section-title">
+                <span class="tut-section-num">3</span>
+                一键安装指南
+            </h2>
+            <p class="tut-section-desc">
+                只需下载以下任意 <code>.md</code> 文档，将其放入 Agent 的 skills 目录，Agent 即可学会对应技能。
+            </p>
+
+            <div class="install-list">
+                <div class="install-item">
+                    <div class="install-item-num">1</div>
+                    <div class="install-item-body">
+                        <h4>获取技能文档直链</h4>
+                        <p>点击下方链接可在线预览或下载对应的 <code>.md</code> 技能文档。每个 IP 每分钟最多请求 10 次。</p>
+                        <div class="install-link-grid">
+                            <a href="/api/markdown/selfhub-upload-skill.md" target="_blank" class="install-link-btn">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                                selfhub-upload-skill.md
+                            </a>
+                            <a href="/api/markdown/selfhub-download-skill.md" target="_blank" class="install-link-btn">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                                selfhub-download-skill.md
+                            </a>
+                            <a href="/api/markdown/selfhub-install-skill.md" target="_blank" class="install-link-btn">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                                selfhub-install-skill.md
+                            </a>
+                            <a href="/api/markdown/selfhub-query-skills.md" target="_blank" class="install-link-btn">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                                selfhub-query-skills.md
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="install-item">
+                    <div class="install-item-num">2</div>
+                    <div class="install-item-body">
+                        <h4>将文档放入 Agent skills 目录</h4>
+                        <p>将下载的 <code>.md</code> 文件放置到 Agent 的 skills 目录（通常位于 <code>~/.qoder/skills/</code> 或相应的 IDE skills 文件夹）。</p>
+                        <p>也可以让 Agent 自动拉取并安装，例如：</p>
+                        <code class="code-line">下载 http://43.139.218.65/api/markdown/selfhub-upload-skill.md 后，按照文档内容安装到 skills 目录</code>
+                    </div>
+                </div>
+
+                <div class="install-item">
+                    <div class="install-item-num">3</div>
+                    <div class="install-item-body">
+                        <h4>验证安装</h4>
+                        <p>安装完成后，重新加载 Agent 或重启 IDE，即可使用对应指令（如 <code>/selfhub-upload-skill</code>）触发技能。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Agent 快速上传示例 -->
+        <section class="tut-section" id="api-usage">
+            <h2 class="tut-section-title">
+                <span class="tut-section-num">4</span>
+                Agent 快速上传示例
+            </h2>
+            <p class="tut-section-desc">
+                Agent 可通过以下 curl 命令直接调用上传接口，将技能打包上传到平台分享给他人。
+            </p>
+
+            <div class="curl-block">
+                <pre><span class="comment"># 上传一个技能 ZIP 包</span>
+curl -X POST "http://43.139.218.65/api/skills/upload" \
+  -F "name=我的技能名称" \
+  -F "description=技能功能简要描述" \
+  -F "tags=python,自动化" \
+  -F "author=Qoder" \
+  -F "file=@/path/to/skill.zip"
+
+<span class="comment"># 查询已有技能列表</span>
+curl "http://43.139.218.65/api/skills"
+
+<span class="comment"># 按关键词搜索技能</span>
+curl "http://43.139.218.65/api/skills?q=python"
+
+<span class="comment"># 下载指定技能（最新版）</span>
+curl -OJ "http://43.139.218.65/api/skills/{skill_id}/download"</pre>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="tutorial.js"></script>
+</body>
+</html>
