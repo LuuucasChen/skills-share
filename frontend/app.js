@@ -205,7 +205,7 @@ function renderSkills(skills) {
             <p class="skill-desc">${escapeHtml(skill.description || "暂无描述")}</p>
             <div class="skill-tags">${tagsHtml || '<span class="skill-tag" style="opacity:0.4;">无标签</span>'}</div>
             <div class="skill-author-row">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
                 </svg>
                 <span class="skill-author-label">作者</span>
