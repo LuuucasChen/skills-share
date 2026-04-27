@@ -1140,13 +1140,19 @@ main {
 }
 
 /* ==========================================================
-   导航按钮 — 使用教程（右上角 fixed）
+   导航栏 — 右上角 fixed
    ========================================================== */
-.nav-tutorial {
+.nav-bar {
     position: fixed;
     top: 18px;
     right: 24px;
     z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-tutorial {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -1172,6 +1178,35 @@ main {
     background: var(--surface-hover);
     border-color: var(--accent);
     box-shadow: 0 4px 16px rgba(201,100,66,0.12);
+}
+
+.nav-game {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: var(--text-secondary);
+    background: var(--surface);
+    border: 1px solid var(--border-warm);
+    border-radius: 50%;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: color var(--duration) var(--ease),
+                background var(--duration) var(--ease),
+                border-color var(--duration) var(--ease),
+                box-shadow var(--duration) var(--ease),
+                transform var(--duration) var(--ease-spring);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.nav-game:hover {
+    color: var(--accent);
+    background: var(--surface-hover);
+    border-color: var(--accent);
+    box-shadow: 0 4px 16px rgba(201,100,66,0.12);
+    transform: scale(1.1);
 }
 
 /* ==========================================================
