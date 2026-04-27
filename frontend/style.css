@@ -514,12 +514,14 @@ main {
 .skill-author-row {
     display: flex;
     align-items: center;
+    flex-wrap: nowrap;
     gap: 6px;
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-secondary);
     padding: 6px 0 2px;
     border-top: 1px dashed var(--border-warm);
     margin-top: 2px;
+    overflow: hidden;
 }
 
 .skill-author-row svg {
@@ -530,6 +532,8 @@ main {
 .skill-author-label {
     color: var(--text-muted);
     font-size: 14px;
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .skill-author-name {
@@ -538,6 +542,10 @@ main {
     color: var(--text);
     font-size: 14px;
     letter-spacing: 0.2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
 }
 
 .skill-meta-actions {
