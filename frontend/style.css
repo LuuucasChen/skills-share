@@ -1,5 +1,5 @@
 /* =========================================================
-   Skill Share — Claude Inspired Design System
+   Skills Share — Claude Inspired Design System
    方向：文学沙龙 · 温暖羊皮纸 · 衬线标题 + 无衬线UI
    ========================================================= */
 
@@ -98,7 +98,7 @@ body {
 
 .site-tagline {
     font-family: var(--font-sans);
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 400;
     color: var(--text-secondary);
     line-height: 1.40;
