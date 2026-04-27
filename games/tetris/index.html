@@ -225,6 +225,16 @@ h1 {
         <!-- Main Board -->
         <div class="board-container">
             <canvas id="gameCanvas" width="300" height="600"></canvas>
+            <!-- Overlay: Start -->
+            <div class="overlay active" id="startOverlay">
+                <h2 style="font-size:1.8rem;margin-bottom:4px;">俄罗斯方块</h2>
+                <p style="margin-bottom:24px;">经典玩法 · SRS 旋转 · Ghost 影子</p>
+                <button class="btn" id="startBtn">开始游戏</button>
+                <div style="margin-top:18px;font-size:0.72rem;color:#555;line-height:1.9;">
+                    <kbd>←</kbd><kbd>→</kbd> 移动 &nbsp;·&nbsp; <kbd>↑</kbd> 旋转 &nbsp;·&nbsp; <kbd>空格</kbd> 直接落下<br>
+                    <kbd>↓</kbd> 加速 &nbsp;·&nbsp; <kbd>C</kbd> 暂存 &nbsp;·&nbsp; <kbd>P</kbd> 暂停
+                </div>
+            </div>
             <!-- Overlay: Pause -->
             <div class="overlay" id="pauseOverlay">
                 <h2>已暂停</h2>
@@ -307,6 +317,8 @@ h1 {
     const linesEl = document.getElementById('linesDisplay');
     const levelEl = document.getElementById('levelDisplay');
     const finalScoreEl = document.getElementById('finalScore');
+    const startOverlay = document.getElementById('startOverlay');
+    const startBtn = document.getElementById('startBtn');
     const pauseOverlay = document.getElementById('pauseOverlay');
     const gameOverOverlay = document.getElementById('gameOverOverlay');
     const restartBtn = document.getElementById('restartBtn');
@@ -841,6 +853,7 @@ h1 {
         level = 1;
         gameOver = false;
         paused = false;
+        startOverlay.classList.remove('active');
         gameOverOverlay.classList.remove('active');
         pauseOverlay.classList.remove('active');
         currentPiece = null;
@@ -855,11 +868,13 @@ h1 {
         currentPiece = spawnPiece();
         updateUI();
 
-        if (!started) {
-            started = true;
-            lastTime = performance.now();
-            gameLoop(lastTime);
+        if (animFrameId) {
+            cancelAnimationFrame(animFrameId);
+            animFrameId = null;
         }
+        started = true;
+        lastTime = performance.now();
+        gameLoop(lastTime);
     }
 
     function togglePause() {
@@ -935,8 +950,31 @@ h1 {
         startGame();
     });
 
-    // ---- Init ----
-    startGame();
+    // ---- Start button ----
+    startBtn.addEventListener('click', () => {
+        startGame();
+    });
+
+    // ---- Init: draw empty grid behind the start overlay ----
+    (function initDisplay() {
+        board = createBoard();
+        ctx.fillStyle = '#0d0d1a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = '#1a1a2e';
+        ctx.lineWidth = 0.5;
+        for (let r = 0; r <= ROWS; r++) {
+            ctx.beginPath();
+            ctx.moveTo(0, r * BLOCK_SIZE);
+            ctx.lineTo(canvas.width, r * BLOCK_SIZE);
+            ctx.stroke();
+        }
+        for (let c = 0; c <= COLS; c++) {
+            ctx.beginPath();
+            ctx.moveTo(c * BLOCK_SIZE, 0);
+            ctx.lineTo(c * BLOCK_SIZE, canvas.height);
+            ctx.stroke();
+        }
+    })();
 })();
 </script>
 </body>
