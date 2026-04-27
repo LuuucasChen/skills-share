@@ -205,8 +205,15 @@ main {
     display: flex;
     gap: 12px;
     align-items: center;
-    margin-bottom: 40px;
+    margin-bottom: 12px;
     animation: fadeInUp 0.6s var(--ease-out) 0.3s both;
+}
+
+.sort-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 28px;
+    animation: fadeInUp 0.6s var(--ease-out) 0.35s both;
 }
 
 .search-wrap {
@@ -1047,6 +1054,10 @@ main {
         flex-direction: column;
     }
 
+    .sort-bar {
+        width: 100%;
+    }
+
     .search-wrap {
         width: 100%;
     }
@@ -1537,6 +1548,164 @@ main {
 .install-link-btn svg {
     flex-shrink: 0;
     color: var(--accent);
+}
+
+/* 一键安装 — Hero 卡片 */
+.setup-hero-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 24px var(--accent-glow);
+}
+
+.setup-hero-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+}
+
+.setup-hero-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius);
+    background: var(--accent-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.setup-hero-title {
+    font-family: "SF Mono", Consolas, "Liberation Mono", monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.setup-hero-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.setup-hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--accent);
+    color: var(--text-inverse);
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background var(--duration) var(--ease),
+                box-shadow var(--duration) var(--ease);
+}
+
+.setup-hero-btn:hover {
+    background: var(--accent-dark);
+    box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+/* Agent 指令示例 */
+.setup-prompt-block {
+    background: var(--bg-warm);
+    border: 1px solid var(--border-warm);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    margin-bottom: 20px;
+}
+
+.setup-prompt-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.setup-prompt-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+    word-break: break-all;
+}
+
+.setup-prompt-url {
+    font-family: "SF Mono", Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 500;
+}
+
+/* 可折叠单独文档列表 */
+.setup-details {
+    border: 1px solid var(--border-warm);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.setup-details summary {
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color var(--duration) var(--ease),
+                background var(--duration) var(--ease);
+}
+
+.setup-details summary::-webkit-details-marker { display: none; }
+
+.setup-details summary::before {
+    content: '▶';
+    font-size: 10px;
+    color: var(--text-muted);
+    transition: transform var(--duration) var(--ease);
+    flex-shrink: 0;
+}
+
+.setup-details[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.setup-details summary:hover {
+    color: var(--text);
+    background: var(--bg-warm);
+}
+
+.setup-details .install-link-grid {
+    padding: 0 16px 16px;
+}
+
+@media (max-width: 640px) {
+    .setup-hero-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .setup-hero-btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* 快速上传示例 */

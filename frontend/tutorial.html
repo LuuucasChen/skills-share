@@ -185,62 +185,66 @@
                 一键安装指南
             </h2>
             <p class="tut-section-desc">
-                只需下载以下任意 <code>.md</code> 文档，将其放入 Agent 的 skills 目录，Agent 即可学会对应技能。
+                只需让 Agent 下载一个汇总文档，即可安装全部 4 个平台技能。
             </p>
 
-            <div class="install-list">
-                <div class="install-item">
-                    <div class="install-item-num">1</div>
-                    <div class="install-item-body">
-                        <h4>获取技能文档直链</h4>
-                        <p>点击下方链接可在线预览或下载对应的 <code>.md</code> 技能文档。每个 IP 每分钟最多请求 10 次。</p>
-                        <div class="install-link-grid">
-                            <a href="/api/markdown/selfhub-upload-skill.md" target="_blank" class="install-link-btn">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
-                                </svg>
-                                selfhub-upload-skill.md
-                            </a>
-                            <a href="/api/markdown/selfhub-download-skill.md" target="_blank" class="install-link-btn">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
-                                </svg>
-                                selfhub-download-skill.md
-                            </a>
-                            <a href="/api/markdown/selfhub-install-skill.md" target="_blank" class="install-link-btn">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
-                                </svg>
-                                selfhub-install-skill.md
-                            </a>
-                            <a href="/api/markdown/selfhub-query-skills.md" target="_blank" class="install-link-btn">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
-                                </svg>
-                                selfhub-query-skills.md
-                            </a>
-                        </div>
+            <!-- 主要 CTA 卡片 -->
+            <div class="setup-hero-card">
+                <div class="setup-hero-left">
+                    <div class="setup-hero-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22v-4m0 0V2m0 16H8m4 0h4"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="setup-hero-title">selfhub-setup.md</div>
+                        <div class="setup-hero-desc">包含全部 4 个技能的安装指引，Agent 按文执行即可完成全套安装</div>
                     </div>
                 </div>
-
-                <div class="install-item">
-                    <div class="install-item-num">2</div>
-                    <div class="install-item-body">
-                        <h4>将文档放入 Agent skills 目录</h4>
-                        <p>将下载的 <code>.md</code> 文件放置到 Agent 的 skills 目录（通常位于 <code>~/.qoder/skills/</code> 或相应的 IDE skills 文件夹）。</p>
-                        <p>也可以让 Agent 自动拉取并安装，例如：</p>
-                        <code class="code-line">下载 http://43.139.218.65/api/markdown/selfhub-upload-skill.md 后，按照文档内容安装到 skills 目录</code>
-                    </div>
-                </div>
-
-                <div class="install-item">
-                    <div class="install-item-num">3</div>
-                    <div class="install-item-body">
-                        <h4>验证安装</h4>
-                        <p>安装完成后，重新加载 Agent 或重启 IDE，即可使用对应指令（如 <code>/selfhub-upload-skill</code>）触发技能。</p>
-                    </div>
-                </div>
+                <a href="/api/markdown/selfhub-setup.md" target="_blank" class="setup-hero-btn">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    查看安装文档
+                </a>
             </div>
+
+            <!-- Agent 指乊示例 -->
+            <div class="setup-prompt-block">
+                <div class="setup-prompt-label">向 Agent 发出这句话即可自动安装：</div>
+                <div class="setup-prompt-text">下载 <span class="setup-prompt-url">http://43.139.218.65/api/markdown/selfhub-setup.md</span> 并按照文档内容安装平台技能包</div>
+            </div>
+
+            <!-- 单独文档链接（可折叠） -->
+            <details class="setup-details">
+                <summary>单独查看 / 下载某一个技能文档</summary>
+                <div class="install-link-grid" style="margin-top: 14px;">
+                    <a href="/api/markdown/selfhub-upload-skill.md" target="_blank" class="install-link-btn">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                        selfhub-upload-skill.md
+                    </a>
+                    <a href="/api/markdown/selfhub-download-skill.md" target="_blank" class="install-link-btn">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                        selfhub-download-skill.md
+                    </a>
+                    <a href="/api/markdown/selfhub-install-skill.md" target="_blank" class="install-link-btn">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                        selfhub-install-skill.md
+                    </a>
+                    <a href="/api/markdown/selfhub-query-skills.md" target="_blank" class="install-link-btn">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                        selfhub-query-skills.md
+                    </a>
+                </div>
+            </details>
         </section>
 
         <!-- Section 4: Agent 快速上传示例 -->

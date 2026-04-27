@@ -50,6 +50,7 @@ md_ip_access_log: dict[str, list[float]] = {}
 
 # 白名单：仅允许在线读取的 Markdown 文件，防止路径穿越
 ALLOWED_MD_FILES = {
+    "selfhub-setup.md",
     "selfhub-upload-skill.md",
     "selfhub-download-skill.md",
     "selfhub-install-skill.md",
